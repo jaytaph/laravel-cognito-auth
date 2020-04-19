@@ -23,7 +23,11 @@ class CognitoAuthServiceProvider extends ServiceProvider
         $this->app->singleton(CognitoClient::class, function (Application $app) {
 
             if (config('cognito.use_default_provider')) {
-                $config = CredentialProvider::defaultProvider();
+                $config = [
+                    'credentials' => CredentialProvider::defaultProvider(),
+                    'region' => config('cognito.region'),
+                    'version' => config('cognito.version'),
+                ];
             } else {
                 $config = [
                     'credentials' => config('cognito.credentials'),
