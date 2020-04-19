@@ -2,6 +2,7 @@
 
 namespace BlackBits\LaravelCognitoAuth;
 
+use Aws\Credentials\CredentialProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use BlackBits\LaravelCognitoAuth\Auth\CognitoGuard;
