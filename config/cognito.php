@@ -2,6 +2,7 @@
 
 return [
     // AWS Settings
+    'use_default_provider' => env('AWS_COGNITO_USE_DEFAULT_PROVIDER', false),
     'credentials'       => [
         'key'    => env('AWS_COGNITO_KEY', ''),
         'secret' => env('AWS_COGNITO_SECRET', ''),
