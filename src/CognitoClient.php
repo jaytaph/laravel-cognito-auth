@@ -365,6 +365,34 @@ class CognitoClient
         return base64_encode($hash);
     }
 
+    public function enable($username)
+    {
+        try {
+            $user = $this->client->AdminEnableUser([
+                'Username'   => $username,
+                'UserPoolId' => $this->poolId,
+            ]);
+        } catch (CognitoIdentityProviderException $e) {
+            return false;
+        }
+
+        return $user;
+    }
+
+    public function disable($username)
+    {
+        try {
+            $user = $this->client->AdminDisableUser([
+                'Username'   => $username,
+                'UserPoolId' => $this->poolId,
+            ]);
+        } catch (CognitoIdentityProviderException $e) {
+            return false;
+        }
+
+        return $user;
+    }
+
     /**
      * Get user details.
      * http://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUser.html.
@@ -384,6 +412,50 @@ class CognitoClient
         }
 
         return $user;
+    }
+
+    public function getGroupsForUser($username)
+    {
+        try {
+            $groups = $this->client->AdminListGroupsForUser([
+                'Username'   => $username,
+                'UserPoolId' => $this->poolId,
+            ]);
+        } catch (CognitoIdentityProviderException $e) {
+            return false;
+        }
+
+        return $groups;
+    }
+
+    /**
+     * @param array $attributes
+     * @return mixed
+     */
+    public function listUsers()
+    {
+        $users = [];
+        $paginationToken = null;
+
+        do {
+            $params = [
+                'UserPoolId' => $this->poolId,
+            ];
+            if (! empty($paginationToken)) {
+                $params['PaginationToken'] = $paginationToken;
+            }
+
+            try {
+                $result = $this->client->ListUsers($params);
+            } catch (CognitoIdentityProviderException $e) {
+                break;
+            }
+
+            $paginationToken = $result['PaginationToken'];
+            $users = array_merge($users, $result['Users']);
+        } while (! empty($paginationToken));
+
+        return $users;
     }
 
     /**
