@@ -2,6 +2,7 @@
 
 namespace BlackBits\LaravelCognitoAuth\Auth;
 
+use BlackBits\LaravelCognitoAuth\Exceptions\PasswordResetRequiredException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use BlackBits\LaravelCognitoAuth\Exceptions\NoLocalUserException;
@@ -59,6 +60,8 @@ trait AuthenticatesUsers
             }
         } catch (CognitoIdentityProviderException $c) {
             return $this->sendFailedCognitoResponse($c);
+        } catch (PasswordResetRequiredException $passwordResetRequiredException) {
+            return redirect('/password-reset');
         } catch (\Exception $e) {
             return $this->sendFailedLoginResponse($request);
         }
